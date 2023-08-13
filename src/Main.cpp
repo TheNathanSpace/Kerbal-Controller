@@ -131,16 +131,23 @@ void loop()
 
 void callbackHandler(byte messageType, byte message[], byte messageSize)
 {
-    switch (messageType) {
+    switch (messageType)
+    {
         case ACTIONSTATUS_MESSAGE:
             byte actions = message[0];
-            if (actions & SAS_ACTION) {
-                if (!STATUS_SAS_TOGGLE) {
+
+            // SAS_ACTION tells whether or not it's enabled
+            // https://kerbalsimpitrevamped-arduino.readthedocs.io/en/latest/messagetypes.html#_CPPv4N15OutboundPackets20ACTIONSTATUS_MESSAGEE
+            if (actions & SAS_ACTION)
+            {
+                if (!STATUS_SAS_TOGGLE)
+                {
                     STATUS_SAS_TOGGLE = HIGH;
                     digitalWrite(OUTPUT_SAS_TOGGLE, HIGH);
                 }
             }
-            else {
+            else
+            {
                 STATUS_SAS_TOGGLE = LOW;
                 digitalWrite(OUTPUT_SAS_TOGGLE, LOW);
             }
@@ -156,74 +163,94 @@ void setOutputs()
 
 void checkInputs()
 {
-    if (buttonPressed(bIVA)) {
+    if (buttonPressed(bIVA))
+    {
         keyboard.sendKey('C');
     }
 
-    if (buttonPressed(bMapView)) {
+    if (buttonPressed(bMapView))
+    {
         keyboard.sendKey('M');
     }
 
-    if (buttonPressed(bDockingMode)) {
-        keyboard.sendKey('-1');// todo: replace with delete key
+    if (buttonPressed(bDockingMode))
+    {
+        keyboard.sendKey('D');// todo: replace with delete key
     }
 
-    if (buttonPressed(tsArmStage)) {
+    if (buttonPressed(tsArmStage))
+    {
         // activate light, or else wire light directly to arming switch
 
-        if (buttonPressed(bTriggerStage)) {
+        if (buttonPressed(bTriggerStage))
+        {
             mySimpit.activateAction(STAGE_ACTION);
         }
     }
 
-    if (buttonPressed(tsArmAbort)) {
+    if (buttonPressed(tsArmAbort))
+    {
         // activate light, or else wire light directly to arming switch
 
-        if (buttonPressed(bTriggerAbort)) {
+        if (buttonPressed(bTriggerAbort))
+        {
             mySimpit.activateAction(ABORT_ACTION);
         }
     }
 
-    for (int CAG = 1; CAG < 10; CAG++) {
-        if (CAG <= 7 && buttonPressed(CAGArray[CAG])) {
+    // todo: audit this
+    for (int CAG = 1; CAG < 10; CAG++)
+    {
+        if (CAG <= 7 && buttonPressed(CAGArray[CAG]))
+        {
             mySimpit.toggleCAG(CAG);
         }
 
-        if (CAG > 7 && buttonChanged(CAG)) {
+        if (CAG > 7 && buttonChanged(CAG))
+        {
             mySimpit.toggleCAG(CAG);
         }
     }
     // finish below section
-    for (int SAS = 1; SAS < 10; SAS++) {
-        if (buttonPressed(SASArray[SAS])) {
-            if (!(currentSAS == SAS)) {
+    for (int SAS = 1; SAS < 10; SAS++)
+    {
+        if (buttonPressed(SASArray[SAS]))
+        {
+            if (!(currentSAS == SAS))
+            {
                 currentSAS = SAS;
                 mySimpit.setSASMode(SAS);
             }
         }
     }
 
-    if (buttonChanged(tsBrakes)) {
+    if (buttonChanged(tsBrakes))
+    {
         mySimpit.toggleAction(BRAKES_ACTION);
     }
 
-    if (buttonChanged(tsGear)) {
+    if (buttonChanged(tsGear))
+    {
         mySimpit.toggleAction(GEAR_ACTION);
     }
 
-    if (buttonChanged(tsLights)) {
+    if (buttonChanged(tsLights))
+    {
         mySimpit.toggleAction(LIGHT_ACTION);
     }
 
-    if (buttonChanged(tsRCS)) {
+    if (buttonChanged(tsRCS))
+    {
         mySimpit.toggleAction(RCS_ACTION);
     }
 
-    if (buttonChanged(tsSAS)) {
+    if (buttonChanged(tsSAS))
+    {
         mySimpit.toggleAction(SAS_ACTION);
     }
 
-    if (buttonChanged(tsThrottleSensitivity)) {
+    if (buttonChanged(tsThrottleSensitivity))
+    {
         toggleThrottleSensitivity();
     }
 
@@ -272,7 +299,8 @@ void initPins()
     bTriggerStage.begin();
     bTriggerAbort.begin();
 
-    for (int CAG = 1; CAG < 10; CAG++) {
+    for (int CAG = 1; CAG < 10; CAG++)
+    {
         CAGArray[CAG].begin();
     }
 
@@ -282,7 +310,8 @@ void initPins()
     tsRCS.begin();
 
     tsSAS.begin();
-    for (int SASPin = 1; SASPin < 10; SASPin++) {
+    for (int SASPin = 1; SASPin < 10; SASPin++)
+    {
         SASArray[SASPin].begin();
     }
 
